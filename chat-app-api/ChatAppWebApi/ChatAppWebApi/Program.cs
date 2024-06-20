@@ -1,23 +1,26 @@
 using Infrastructure;
+using Infrastructure.Database;
+using SHG.Infrastructure;
 
 namespace ChatAppWebApi
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddInfrastructure(builder.Configuration);
 
             var app = builder.Build();
+
+            await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
+            await InfrastructureHandler.InitDbContext(scope.ServiceProvider.GetRequiredService<MessagesDbContext>(), scope.ServiceProvider);
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
