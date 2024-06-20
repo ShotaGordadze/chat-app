@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Infrastructure.Database.Entities;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Text;
 using System.Threading.Channels;
 
@@ -8,6 +10,7 @@ namespace Application.RabbitMQ;
 public interface IMessageService
 {
     void SendMessage(string message, string queueName, out bool sentSuccessfully);
+    Message ConsumeMessage(string queueName);
     void DeclareQueue(string queueName);
 }
 
@@ -44,8 +47,29 @@ public class MessageService : IMessageService
 
         if (!_channel.WaitForConfirms())
             sentSuccessfully = false;
-        
+
         else
             sentSuccessfully = true;
+    }
+
+    public Message ConsumeMessage(string queueName)
+    {
+        var consumer = new EventingBasicConsumer(_channel);
+        string message = string.Empty;
+        consumer.Received += (model, ea) =>
+        {
+            var body = ea.Body.ToArray();
+            message = Encoding.UTF8.GetString(body);
+        };
+
+        _channel.BasicConsume(queue: queueName,
+                              autoAck: true,
+                              consumer: consumer);
+
+        return new Message
+        {
+            Context = message,
+            Username = "Not set yet"
+        };
     }
 }

@@ -39,7 +39,7 @@ namespace Application.NewFolder
 
                 await _messageRepository.Store(message);
 
-               await _unitOfWork.SaveAsync(cancellationToken);
+                await _unitOfWork.SaveAsync(cancellationToken);
 
                 return message;
             }

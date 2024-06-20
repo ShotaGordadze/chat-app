@@ -13,6 +13,7 @@ public static class DIExtensions
         services.AddDbContext<MessagesDbContext>((sc, options) => { options.UseNpgsql(configuration.GetConnectionString("User ID=postgres;Password=123456;Host=localhost;Port=5432;Database=InventoryManagement;Pooling=true;")); });
 
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }
