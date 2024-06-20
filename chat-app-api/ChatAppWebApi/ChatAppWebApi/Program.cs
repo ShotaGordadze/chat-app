@@ -1,5 +1,8 @@
+using Application.RabbitMQ;
 using Infrastructure;
 using Infrastructure.Database;
+using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Connections;
 using SHG.Infrastructure;
 
 namespace ChatAppWebApi
@@ -16,13 +19,15 @@ namespace ChatAppWebApi
 
             builder.Services.AddInfrastructure(builder.Configuration);
 
+            builder.Services.AddSingleton<RabbitMQPersistentConnection>();
+            builder.Services.AddSingleton<IMessageService, MessageService>();
+
             var app = builder.Build();
 
             await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
             await InfrastructureHandler.InitDbContext(scope.ServiceProvider.GetRequiredService<MessagesDbContext>(), scope.ServiceProvider);
 
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
