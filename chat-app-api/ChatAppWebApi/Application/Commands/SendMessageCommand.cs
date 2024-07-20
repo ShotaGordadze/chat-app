@@ -24,7 +24,7 @@ namespace Application.NewFolder
 
         public async Task<Message> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
-            string queueName = "TestQueue";
+            string queueName = "chat-queue";
 
             _messageService.DeclareQueue(queueName);
             _messageService.SendMessage(request.Message, queueName, out bool sentSuccessfully);

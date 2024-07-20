@@ -23,7 +23,7 @@ public class ConsumeMessageCommandHandler : IRequestHandler<ConsumeMessageComman
 
     public async Task<Message> Handle(ConsumeMessageCommand request, CancellationToken cancellationToken)
     {
-        string queueName = "TestQueue";
+        string queueName = "chat-queue";
 
         _messageService.DeclareQueue(queueName);
         var message = _messageService.ConsumeMessage(queueName);

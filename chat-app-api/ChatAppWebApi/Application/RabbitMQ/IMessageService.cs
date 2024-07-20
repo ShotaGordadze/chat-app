@@ -56,15 +56,18 @@ public class MessageService : IMessageService
     {
         var consumer = new EventingBasicConsumer(_channel);
         string message = string.Empty;
+        var messageReceivedEvent = new AutoResetEvent(false);
+
         consumer.Received += (model, ea) =>
         {
             var body = ea.Body.ToArray();
             message = Encoding.UTF8.GetString(body);
+            messageReceivedEvent.Set();  
         };
 
-        _channel.BasicConsume(queue: queueName,
-                              autoAck: true,
-                              consumer: consumer);
+        _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+
+        messageReceivedEvent.WaitOne();  
 
         return new Message
         {
