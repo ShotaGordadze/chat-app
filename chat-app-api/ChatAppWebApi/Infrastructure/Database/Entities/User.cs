@@ -8,5 +8,5 @@ public class User : IdentityUser<Guid>
 
     public string Lastname { get; set; }
 
-    public DateTime AccCreateTime { get; set; } = DateTime.Now;
+    public DateTime AccCreateDate { get; set; }
 }

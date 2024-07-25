@@ -28,8 +28,9 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, User?>
             Name = request.Name,
             Lastname = request.Lastname,
             Email = request.Email,
-            UserName = request.Username
-        }, request.Password);
+            UserName = request.Username,
+            AccCreateDate = DateTime.UtcNow
+        }, request.Password); ;
 
         if (!idpUserResult.Succeeded)
         {
