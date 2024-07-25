@@ -4,7 +4,7 @@ using Infrastructure.Database.Entities;
 using Infrastructure.Repositories;
 using MediatR;
 
-namespace Application.Commands;
+namespace Application.Commands.MessageCommands;
 
 public record ConsumeMessageCommand() : IRequest<Message>;
 
