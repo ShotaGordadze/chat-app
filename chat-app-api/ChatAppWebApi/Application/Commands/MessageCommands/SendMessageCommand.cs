@@ -5,7 +5,7 @@ using Infrastructure.Database.Entities;
 using Infrastructure.Repositories;
 using MediatR;
 
-namespace Application.NewFolder
+namespace Application.Commands.MessageCommands
 {
     public record SendMessageCommand(string Message) : IRequest<Message>;
 
