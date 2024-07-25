@@ -29,4 +29,17 @@ public class AuthController : ControllerBase
 
         return BadRequest("Couldn't create an user");
     }
+
+    [HttpPost("SignIn")]
+    public async Task<IActionResult> SignInAsync(SignInModel model)
+    {
+        var userToken = await _mediator.Send(new SignInCommand(model.Username, model.Password));
+
+        if (userToken is null)
+        {
+            return BadRequest();
+        }
+
+        return Ok(userToken);
+    }
 }

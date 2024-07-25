@@ -27,9 +27,11 @@ public class MessagesDbContext : DbContext
 
         modelBuilder.Entity<User>().ToTable("Users", "identity");
         modelBuilder.Entity<Role>().ToTable("Roles", "identity");
-        modelBuilder.Entity<IdentityUserRole<Guid>>().HasKey(p => new { p.UserId, p.RoleId });
-        modelBuilder.Entity<IdentityUserLogin<Guid>>().HasKey(p => new { p.LoginProvider, p.ProviderKey });
-        modelBuilder.Entity<IdentityUserToken<Guid>>().HasKey(p => new { p.UserId, p.LoginProvider, p.Name });
+        modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles", "identity");
+        modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims", "identity");
+        modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins", "identity");
+        modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims", "identity");
+        modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens", "identity");
 
         var messageEntity = modelBuilder.Entity<Message>();
 

@@ -1,5 +1,4 @@
-﻿using Application.Commands;
-using Application.NewFolder;
+﻿using Application.Commands.MessageCommands;
 using Infrastructure.Database.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
