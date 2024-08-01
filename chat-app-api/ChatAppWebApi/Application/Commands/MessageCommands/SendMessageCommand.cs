@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Commands.MessageCommands
 {
-    public record SendMessageCommand(string Message) : IRequest<Message>;
+    public record SendMessageCommand(string Message, string Username) : IRequest<Message>;
 
     public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, Message>
     {
@@ -34,7 +34,7 @@ namespace Application.Commands.MessageCommands
                 Message message = new Message
                 {
                     Context = request.Message,
-                    Username = "Not Set Yet"
+                    Username = request.Username,
                 };
 
                 await _messageRepository.Store(message);

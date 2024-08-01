@@ -33,6 +33,21 @@ public class MessagesDbContext : DbContext
         modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims", "identity");
         modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens", "identity");
 
+        modelBuilder.Entity<IdentityUserLogin<Guid>>()
+            .HasKey(l => new { l.LoginProvider, l.ProviderKey });
+
+        modelBuilder.Entity<IdentityUserRole<Guid>>()
+            .HasKey(r => new { r.UserId, r.RoleId });
+
+        modelBuilder.Entity<IdentityUserClaim<Guid>>()
+            .HasKey(c => c.Id);
+
+        modelBuilder.Entity<IdentityUserToken<Guid>>()
+            .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+
+        modelBuilder.Entity<IdentityRoleClaim<Guid>>()
+            .HasKey(rc => rc.Id);
+
         var messageEntity = modelBuilder.Entity<Message>();
 
         messageEntity.ToTable("Messages")

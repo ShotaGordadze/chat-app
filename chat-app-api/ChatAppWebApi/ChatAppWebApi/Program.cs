@@ -63,6 +63,8 @@ builder.Services.AddInfrastructure(config);
 builder.Services.AddApplication(config);
 builder.Services.AddAuthentication();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSingleton<RabbitMQPersistentConnection>();
 builder.Services.AddSingleton<IMessageService, MessageService>();
 
