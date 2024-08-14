@@ -48,6 +48,7 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> ConsumeMessageAsync()
     {
         Message result;
