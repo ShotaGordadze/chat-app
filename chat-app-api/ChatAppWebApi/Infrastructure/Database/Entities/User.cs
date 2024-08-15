@@ -9,4 +9,6 @@ public class User : IdentityUser<Guid>
     public string Lastname { get; set; }
 
     public DateTime AccCreateDate { get; set; }
+
+    public List<User> Friends { get; set; }
 }

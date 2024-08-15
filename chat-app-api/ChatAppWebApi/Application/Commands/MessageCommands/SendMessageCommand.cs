@@ -27,7 +27,7 @@ namespace Application.Commands.MessageCommands
             string queueName = "chat-queue";
 
             _messageService.DeclareQueue(queueName);
-            _messageService.SendMessage(request.Message, queueName, out bool sentSuccessfully);
+            _messageService.SendMessage(request.Message, request.Username, queueName, out bool sentSuccessfully);
 
             if (sentSuccessfully)
             {

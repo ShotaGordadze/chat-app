@@ -30,7 +30,7 @@ public class MessagesController : ControllerBase
 
         if (user.Identity.IsAuthenticated)
         {
-            var username = user.FindFirst(ClaimTypes.Name)?.Value;
+            var username = user.FindFirst("username")?.Value;
 
             try
             {

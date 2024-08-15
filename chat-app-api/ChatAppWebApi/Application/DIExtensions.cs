@@ -11,6 +11,7 @@ public static class DIExtensions
     {
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
+        services.AddTransient<IEmailService, EmailService>();
         services.AddScoped<TokenService>();
 
         return services;

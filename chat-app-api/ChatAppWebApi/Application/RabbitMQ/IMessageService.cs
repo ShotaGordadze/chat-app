@@ -1,15 +1,13 @@
 ﻿using Infrastructure.Database.Entities;
-using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using System.Threading.Channels;
 
 namespace Application.RabbitMQ;
 
 public interface IMessageService
 {
-    void SendMessage(string message, string queueName, out bool sentSuccessfully);
+    void SendMessage(string message, string username, string queueName, out bool sentSuccessfully);
     Message ConsumeMessage(string queueName);
     void DeclareQueue(string queueName);
 }
@@ -34,15 +32,21 @@ public class MessageService : IMessageService
                               arguments: null);
     }
 
-    public void SendMessage(string message, string queueName, out bool sentSuccessfully)
+    public void SendMessage(string message, string username, string queueName, out bool sentSuccessfully)
     {
         _channel.ConfirmSelect();
+
+        var properties = _channel.CreateBasicProperties();
+        properties.Headers = new Dictionary<string, object>()
+        {
+            { "username", username }
+        };
 
         byte[] body = Encoding.UTF8.GetBytes(message);
 
         _channel.BasicPublish(exchange: "",
                              routingKey: queueName,
-                             basicProperties: null,
+                             basicProperties: properties,
                              body: body);
 
         if (!_channel.WaitForConfirms())
@@ -56,23 +60,33 @@ public class MessageService : IMessageService
     {
         var consumer = new EventingBasicConsumer(_channel);
         string message = string.Empty;
+        string username = string.Empty;
         var messageReceivedEvent = new AutoResetEvent(false);
 
         consumer.Received += (model, ea) =>
         {
             var body = ea.Body.ToArray();
             message = Encoding.UTF8.GetString(body);
-            messageReceivedEvent.Set();  
+            if (ea.BasicProperties.Headers.TryGetValue("username", out object usernameObj))
+            {
+                byte[] usernameBytes = (byte[])usernameObj;
+                username = Encoding.UTF8.GetString(usernameBytes);
+            }
+            else
+            {
+                username = "unknown";
+            }
+            messageReceivedEvent.Set();
         };
 
         _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
 
-        messageReceivedEvent.WaitOne();  
+        messageReceivedEvent.WaitOne();
 
         return new Message
         {
             Context = message,
-            Username = "Not set yet"
+            Username = username,
         };
     }
 }
