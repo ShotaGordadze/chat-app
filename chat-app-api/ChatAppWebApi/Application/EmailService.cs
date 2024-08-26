@@ -16,25 +16,21 @@ public class EmailService : IEmailService
     {
         string MailServer = "smtp.gmail.com";
         string FromEmail = "shotasemailsender@gmail.com";
-        string Password = "Passwordforemailsender1!";
+        string Password = "fzvb dppx ybiu ajze";
         int Port = 587;
+
         var client = new SmtpClient(MailServer, Port)
         {
+            UseDefaultCredentials = false,
             Credentials = new NetworkCredential(FromEmail, Password),
             EnableSsl = true,
         };
+
         MailMessage mailMessage = new MailMessage(FromEmail, toEmail, subject, body)
         {
             IsBodyHtml = isBodyHTML
         };
 
         return client.SendMailAsync(mailMessage);
-    }
-
-    private async Task SendConfirmationEmail(string? email, User? user, string token)
-    {
-    //    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmationLink = $"http://localhost:3000/confirm-email?UserId={user.Id}&Token={token}";
-        await this.SendEmailAsync(email, "Confirm Your Email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>;.", true);
     }
 }

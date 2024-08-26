@@ -23,7 +23,7 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, User?>
     {
         if (await _userManager.FindByEmailAsync(request.Email) != null)
         {
-           throw new UserAlreadyExistsException($"This user with email: '{request.Email}' already exists", request.Email);
+            throw new UserAlreadyExistsException($"This user with email: '{request.Email}' already exists", request.Email);
         }
 
         var idpUserResult = await _userManager.CreateAsync(new User
@@ -33,15 +33,15 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, User?>
             Email = request.Email,
             UserName = request.Username,
             AccCreateDate = DateTime.UtcNow
-        }, request.Password); 
+        }, request.Password);
+
+        var idpUser = await _userManager.FindByEmailAsync(request.Email);
+        await SendConfirmationEmail(request.Email, idpUser);
 
         if (!idpUserResult.Succeeded)
         {
             return null;
         }
-
-        var idpUser = await _userManager.FindByEmailAsync(request.Email);
-        await SendConfirmationEmail(request.Email, idpUser);
 
         if (idpUser != null) await _userManager.AddToRoleAsync(idpUser, "Client");
 
@@ -50,8 +50,8 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, User?>
 
     private async Task SendConfirmationEmail(string? email, User? user)
     {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmationLink = $"http://localhost:3000/confirm-email?UserId={user.Id}&Token={token}";
-        await _emailService.SendEmailAsync(email, "Confirm Your Email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>;.", true);
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user!);
+        var confirmationLink = $"http://localhost:3000/confirm-email?UserId={user!.Id}&Token={token}";
+        await _emailService.SendEmailAsync(email!, "Confirm Your Email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>;.", true);
     }
 }

@@ -25,10 +25,8 @@ public static class DIExtensions
         })
             .AddRoles<Role>()
             .AddUserManager<UserManager<User>>()
-            .AddEntityFrameworkStores<MessagesDbContext>();
-
-        
-
+            .AddEntityFrameworkStores<MessagesDbContext>()
+            .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
